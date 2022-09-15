@@ -38,8 +38,8 @@ class AmlingTextInformation {
     function TI_display_location_html() // The HTML for the setting field
     { ?>
         <select name="TI_display_location">
-            <option value="0"> Post Start</option>
-            <option value="1"> Post End</option>
+            <option value="0" <?php selected(get_option('TI_display_location'), '0')?> > Post Start</option>  <!-- Check options to see what is selected.  Using WP selected() function and pass in name of option, then what value you're looking for -->
+            <option value="1" <?php selected(get_option('TI_display_location'), '1')?> > Post End</option>
         </select>
     <?php }    
 
