@@ -35,7 +35,7 @@ class AmlingTextInformation {
             ';
         }
 
-    function TI_display_location_html() // The HTML for the setting field
+    function TI_display_location_html() // The HTML for the setting location field
     { ?>
         <select name="TI_display_location">
             <option value="0" <?php selected(get_option('TI_display_location'), '0')?> > Post Start</option>  <!-- Check options to see what is selected.  Using WP selected() function and pass in name of option, then what value you're looking for -->
@@ -43,10 +43,19 @@ class AmlingTextInformation {
         </select>
     <?php }    
 
+    function TI_display_headline_html() // The HTML for the setting headline field
+    { ?>
+        <input type="text" value="<?php echo esc_attr(get_option('TI_display_headline')); ?>" name="TI_display_headline" >
+    <?php }   
+
     function settings_page(){
         add_settings_section('first_section',null,null,'text_information_settings');
+
         add_settings_field('TI_display_location','Display Location',[$this, 'TI_display_location_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the location field
         register_setting('text_information_plugin','TI_display_location',['sanitize_callback' => 'sanitize_text_field', 'default' => '0']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
+
+        add_settings_field('TI_display_headline','Headline Text',[$this, 'TI_display_headline_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the heading text field
+        register_setting('text_information_plugin','TI_display_headline',['sanitize_callback' => 'sanitize_text_field', 'default' => 'Page Text Information']); 
     }
 
 }
