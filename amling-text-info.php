@@ -61,13 +61,24 @@ class AmlingTextInformation {
     function TI_display_readtime_html() // The HTML for the setting headline field
     { ?>
         <input type="checkbox" value="1" name="TI_display_readtime" <?php checked(get_option('TI_display_readtime'), "1");?> >
-    <?php }   
+    <?php }  
+    
+    function sanitizeLocation($input){
+        if($input == '0' || $input == '1'){
+            return $input;
+        }
+        else
+        {
+            add_settings_error('TI_display_location','TI_display_location_error', 'The value of Display Location must be Post Start or Post End');
+            return get_option('TI_display_location');
+        }
+    }
 
     function settings_page(){
         add_settings_section('first_section',null,null,'text_information_settings');
 
         add_settings_field('TI_display_location','Display Location',[$this, 'TI_display_location_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the location field
-        register_setting('text_information_plugin','TI_display_location',['sanitize_callback' => 'sanitize_text_field', 'default' => '0']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
+        register_setting('text_information_plugin','TI_display_location',['sanitize_callback' => [$this, 'sanitizeLocation'], 'default' => '0']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
 
         add_settings_field('TI_display_headline','Headline Text',[$this, 'TI_display_headline_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the heading text field
         register_setting('text_information_plugin','TI_display_headline',['sanitize_callback' => 'sanitize_text_field', 'default' => 'Page Text Information']); 
