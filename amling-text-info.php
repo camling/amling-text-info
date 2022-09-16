@@ -46,6 +46,11 @@ class ATISettings {
     function TI_display_headline_html() // The HTML for the setting headline field
     { ?>
         <input type="text" value="<?php echo esc_attr(get_option('TI_display_headline')); ?>" name="TI_display_headline" >
+    <?php } 
+    
+    function TI_display_headline_checkbox_html() // The HTML for the setting Word Count field
+    { ?>
+        <input type="checkbox" value="1" name="TI_display_headline_checkbox" <?php checked(get_option('TI_display_headline_checkbox'), "1");?> >
     <?php }   
 
     function TI_display_wordcount_html() // The HTML for the setting Word Count field
@@ -84,6 +89,9 @@ class ATISettings {
         add_settings_field('TI_display_headline','Headline Text',[$this, 'TI_display_headline_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the heading text field
         register_setting('text_information_plugin','TI_display_headline',['sanitize_callback' => 'sanitize_text_field', 'default' => 'Page Text Information']); 
 
+        add_settings_field('TI_display_headline_checkbox','Display Headline',[$this, 'TI_display_headline_checkbox_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the Display Heading Checkbox Field
+        register_setting('text_information_plugin','TI_display_headline_checkbox',['sanitize_callback' => 'sanitize_text_field', 'default' => '1']); 
+        
         add_settings_field('TI_display_wordcount','Display Word Count',[$this, 'TI_display_wordcount_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the Display Word Count text field
         register_setting('text_information_plugin','TI_display_wordcount',['sanitize_callback' => 'sanitize_text_field', 'default' => '1']); 
 
@@ -141,7 +149,10 @@ class ATIDisplay {
 
        $extra_content = "<div class='ati_block'>";
       
+       if(get_option('TI_display_headline_checkbox') == "1")
+       {
        $extra_content .= "<h2>".get_option('TI_display_headline', "Text Information"). "</h2>";
+       }
        
        if(get_option('TI_display_wordcount') == "1")
        {
