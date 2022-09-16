@@ -8,7 +8,7 @@ Author: Chris Amling
 Author URI: https://christopheramling.com
 */
 
-class AmlingTextInformation {
+class ATISettings {
 
 
     function __construct()
@@ -63,7 +63,8 @@ class AmlingTextInformation {
         <input type="checkbox" value="1" name="TI_display_readtime" <?php checked(get_option('TI_display_readtime'), "1");?> >
     <?php }  
     
-    function sanitizeLocation($input){
+    function sanitizeLocation($input) // Only allow inputs of 1 or 0, otherwise return whatever value is currently in the database
+    { 
         if($input == '0' || $input == '1'){
             return $input;
         }
@@ -95,7 +96,15 @@ class AmlingTextInformation {
 
 }
 
-$amlingTextInformation = new AmlingTextInformation();
+class ATIDisplay {
+
+   
+
+}
+
+$ati_settings = new ATISettings();
+$ati_display = new ATIDisplay();
+
 
 
 
