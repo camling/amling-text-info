@@ -10,6 +10,16 @@ Author URI: https://christopheramling.com
 
 class ATISettings {
 
+    /*
+    Create WP Setting page 
+    Add interactions to settings page
+    - Select location
+    - heading text
+    - display heading text
+    - display word count
+    - display character count
+    - display estimated reading time
+    */
 
     function __construct()
     {
@@ -109,8 +119,6 @@ class ATIDisplay {
     /*
     Create the Word Count, Character Count and Expected Reading time based on if thoes settings are enabled.
     Return the content with the enabled data appended above or below the content. 
-
-
     */
 
     function __construct()
