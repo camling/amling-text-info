@@ -133,6 +133,7 @@ class ATIDisplay {
         {
             return $this->display_html($the_content);
         }
+        return $the_content;
     }
 
     function get_word_count($the_content)
