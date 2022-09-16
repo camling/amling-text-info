@@ -3,7 +3,7 @@
 /*
 Plugin Name: Amling Text Information
 Description: Add information about the text, Word Count, Character Count...
-Version: 1.0
+Version: 1.0.1
 Author: Chris Amling
 Author URI: https://christopheramling.com
 */
@@ -197,8 +197,26 @@ class ATIDisplay {
 $ati_settings = new ATISettings();
 $ati_display = new ATIDisplay();
 
+register_activation_hook( __FILE__, 'ati_plugin_activate' );
+register_deactivation_hook( __FILE__, 'ati_plugin_deactivate' );
 
+function ati_plugin_activate() // Create the options fields in the database upon plugin activation
+{
+        add_option("TI_display_location", "1");
+        add_option("TI_display_headline", "Post Information");
+        add_option("TI_display_headline_checkbox", "1");
+        add_option("TI_display_wordcount", "1");
+        add_option("TI_display_charactercount", "1");
+        add_option("TI_display_readtime", "1");
+   
+}
 
-
-
-
+function ati_plugin_deactivate() // Remove the options fields in the database upon plugin deactivation
+{ 
+	delete_option( "TI_display_location" );
+    delete_option( "TI_display_headline" );
+    delete_option( "TI_display_headline_checkbox" );
+    delete_option( "TI_display_wordcount" );
+    delete_option( "TI_display_charactercount" );
+    delete_option( "TI_display_readtime" );
+}
