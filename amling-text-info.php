@@ -39,6 +39,7 @@ class ATISettings {
 
                 settings_fields('text_information_plugin'); // The group name from register settings
                 do_settings_sections('text_information_settings'); // Call in the settings from the settings page
+                echo '<p>Turn on and off the different displays with the checkboxes</p>';
                 submit_button(); // Add form submit button
             echo '</form>
             </div>
@@ -93,7 +94,7 @@ class ATISettings {
     function settings_page(){
         add_settings_section('first_section',null,null,'text_information_settings');
 
-        add_settings_field('TI_display_location','Display Location',[$this, 'TI_display_location_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the location field
+        add_settings_field('TI_display_location','Choose Location',[$this, 'TI_display_location_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the location field
         register_setting('text_information_plugin','TI_display_location',['sanitize_callback' => [$this, 'sanitizeLocation'], 'default' => '0']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
 
         add_settings_field('TI_display_headline','Headline Text',[$this, 'TI_display_headline_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the heading text field
@@ -145,8 +146,7 @@ class ATIDisplay {
     }
 
     function get_estimated_reading_time( $the_content, $wpm = 250 ) {
-        $clean_content = strip_shortcodes( $the_content );
-        $clean_content = strip_tags( $clean_content );
+        $clean_content = strip_tags( $the_content );
         $word_count = $this->get_word_count($clean_content);
         $time = ceil( $word_count / $wpm );
         return $time;
@@ -159,7 +159,7 @@ class ATIDisplay {
       
        if(get_option('TI_display_headline_checkbox') == "1")
        {
-       $extra_content .= "<h2>".get_option('TI_display_headline', "Text Information"). "</h2>";
+       $extra_content .= "<h2 class='ati_heading'>".get_option('TI_display_headline', "Text Information"). "</h2>";
        }
        
        if(get_option('TI_display_wordcount') == "1")
