@@ -48,6 +48,21 @@ class AmlingTextInformation {
         <input type="text" value="<?php echo esc_attr(get_option('TI_display_headline')); ?>" name="TI_display_headline" >
     <?php }   
 
+    function TI_display_wordcount_html() // The HTML for the setting headline field
+    { ?>
+        <input type="checkbox" value="1" name="TI_display_wordcount" <?php checked(get_option('TI_display_wordcount'), "1");?> >
+    <?php }   
+
+    function TI_display_charactercount_html() // The HTML for the setting headline field
+    { ?>
+        <input type="checkbox" value="1" name="TI_display_charactercount" <?php checked(get_option('TI_display_charactercount'), "1");?> >
+    <?php }   
+
+    function TI_display_readtime_html() // The HTML for the setting headline field
+    { ?>
+        <input type="checkbox" value="1" name="TI_display_readtime" <?php checked(get_option('TI_display_readtime'), "1");?> >
+    <?php }   
+
     function settings_page(){
         add_settings_section('first_section',null,null,'text_information_settings');
 
@@ -56,6 +71,15 @@ class AmlingTextInformation {
 
         add_settings_field('TI_display_headline','Headline Text',[$this, 'TI_display_headline_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the heading text field
         register_setting('text_information_plugin','TI_display_headline',['sanitize_callback' => 'sanitize_text_field', 'default' => 'Page Text Information']); 
+
+        add_settings_field('TI_display_wordcount','Display Word Count',[$this, 'TI_display_wordcount_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the Display Word Count text field
+        register_setting('text_information_plugin','TI_display_wordcount',['sanitize_callback' => 'sanitize_text_field', 'default' => '1']); 
+
+        add_settings_field('TI_display_charactercount','Display Character Count',[$this, 'TI_display_charactercount_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the Display Character Count text field
+        register_setting('text_information_plugin','TI_display_charactercount',['sanitize_callback' => 'sanitize_text_field', 'default' => '1']); 
+
+        add_settings_field('TI_display_readtime','Display Estimated Read Time',[$this, 'TI_display_readtime_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the Display Character Count text field
+        register_setting('text_information_plugin','TI_display_readtime',['sanitize_callback' => 'sanitize_text_field', 'default' => '1']); 
     }
 
 }
