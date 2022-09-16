@@ -153,7 +153,7 @@ class ATIDisplay {
         $extra_content .= "<p class='ati_character_count'>Character Count: <span>" . $this->get_character_count($the_content) . "</span></p>";
        }
 
-       if(get_option('TI_display_charactercount') == "1")
+       if(get_option('TI_display_readtime') == "1")
        {
         $extra_content .= "<p class='ati_reading_time'>Est. Reading Time: <span>" . $this->get_estimated_reading_time($the_content) . " minutes </span></p>";
        }
