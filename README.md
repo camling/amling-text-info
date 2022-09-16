@@ -15,6 +15,14 @@ A WordPress plugin that display information about the content of a post
 * Login to WordPress and go to the plugins directory
 * Click "Activate" under Amling Text Information
 
+## Styling
+* "ati_block" : container block
+* "ati_heading" : heading block
+* "ati_word_count" : word count block
+* "ati_character_count" : character count block
+* "ati_reading_time" : estimated reading time block
+The dynamic counts for Word, Character and Time all have span tags.
+
 ## Author
 Chris Amling
 
