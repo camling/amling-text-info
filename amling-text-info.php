@@ -48,17 +48,17 @@ class ATISettings {
         <input type="text" value="<?php echo esc_attr(get_option('TI_display_headline')); ?>" name="TI_display_headline" >
     <?php }   
 
-    function TI_display_wordcount_html() // The HTML for the setting headline field
+    function TI_display_wordcount_html() // The HTML for the setting Word Count field
     { ?>
         <input type="checkbox" value="1" name="TI_display_wordcount" <?php checked(get_option('TI_display_wordcount'), "1");?> >
     <?php }   
 
-    function TI_display_charactercount_html() // The HTML for the setting headline field
+    function TI_display_charactercount_html() // The HTML for the setting Character Count field
     { ?>
         <input type="checkbox" value="1" name="TI_display_charactercount" <?php checked(get_option('TI_display_charactercount'), "1");?> >
     <?php }   
 
-    function TI_display_readtime_html() // The HTML for the setting headline field
+    function TI_display_readtime_html() // The HTML for the setting Read Time field
     { ?>
         <input type="checkbox" value="1" name="TI_display_readtime" <?php checked(get_option('TI_display_readtime'), "1");?> >
     <?php }  
@@ -98,7 +98,79 @@ class ATISettings {
 
 class ATIDisplay {
 
-   
+    /*
+    Create the Word Count, Character Count and Expected Reading time based on if thoes settings are enabled.
+    Return the content with the enabled data appended above or below the content. 
+
+
+    */
+
+    function __construct()
+    {
+        add_filter('the_content', [$this, 'filterIf']);
+    }
+
+    function filterIf($the_content)
+    {
+        if((is_main_query() && is_single()) && (get_option('TI_display_wordcount') || get_option('TI_display_charactercount')  || get_option('TI_display_readtime'))) // Run filter if one of filter options is checked and its not on a page
+        {
+            return $this->display_html($the_content);
+        }
+    }
+
+    function get_word_count($the_content)
+    {
+        return str_word_count(strip_shortcodes($the_content));
+    }
+
+    function get_character_count($the_content)
+    {
+        return strlen(strip_shortcodes($the_content));
+    }
+
+    function get_estimated_reading_time( $the_content, $wpm = 250 ) {
+        $clean_content = strip_shortcodes( $the_content );
+        $clean_content = strip_tags( $clean_content );
+        $word_count = $this->get_word_count($clean_content);
+        $time = ceil( $word_count / $wpm );
+        return $time;
+    }
+
+    function display_html($the_content)
+    {
+
+       $extra_content = "<div class='ati_block'>";
+      
+       $extra_content .= "<h2>".get_option('TI_display_headline', "Text Information"). "</h2>";
+       
+       if(get_option('TI_display_wordcount') == "1")
+       {
+        $extra_content .= "<p class='ati_word_count'>Word Count: <span>" . $this->get_word_count($the_content) . "</span></p>";
+       }
+
+       if(get_option('TI_display_charactercount') == "1")
+       {
+        $extra_content .= "<p class='ati_character_count'>Character Count: <span>" . $this->get_character_count($the_content) . "</span></p>";
+       }
+
+       if(get_option('TI_display_charactercount') == "1")
+       {
+        $extra_content .= "<p class='ati_reading_time'>Est. Reading Time: <span>" . $this->get_estimated_reading_time($the_content) . " minutes </span></p>";
+       }
+
+       $extra_content .= "</div>";
+
+
+       if(get_option('TI_display_location') == "1")
+       {
+         return $the_content . $extra_content;
+       }
+       else
+       {
+        return  $extra_content . $the_content;
+       }
+       
+    }
 
 }
 
