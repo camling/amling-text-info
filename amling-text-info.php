@@ -15,6 +15,7 @@ class ATISettings {
     Add interactions to settings page
     - Select location
     - heading text
+    - check post types
     - display heading text
     - display word count
     - display character count
@@ -35,7 +36,7 @@ class ATISettings {
             echo '
             <div class="wrap">
                 <h1>Text Information Settings</h1>
-                <form action="options.php" method="POST">';
+                <form id="options_form_id" action="options.php" method="POST">';
 
                 settings_fields('text_information_plugin'); // The group name from register settings
                 do_settings_sections('text_information_settings'); // Call in the settings from the settings page
@@ -44,6 +45,7 @@ class ATISettings {
             echo '</form>
             </div>
             ';
+           
         }
 
     function TI_display_post_types_html() // The HTML for the setting location field
@@ -56,20 +58,31 @@ class ATISettings {
                 {
                     continue;
                 }
-                $posts_types_array[$post_type->name] = $post_type->labels->singular_name;
+                $posts_types_array[$post_type->name] = $post_type->name;
             }
 
             sort($posts_types_array);
 
+            $options = get_option( 'TI_display_post_types' );
+    
+            $html = '';
+
              foreach($posts_types_array as $single_post_type)
-             { ?>
-                 <input type="checkbox" id="<?php echo $single_post_type ?>" value="1" name="TI_display_post_types_checkbox" <?php checked(get_option('TI_display_headline_checkbox'), "1");?> >
-                 <label for="<?php echo $single_post_type ?>"> <?php echo $single_post_type ?></label><br>
-            <?php 
+             { 
+                if(in_array($single_post_type, $options))
+                {
+                    $html .= '<input type="checkbox" id="'.$single_post_type.'" name="TI_display_post_types[]" value="'.$single_post_type.'"  checked />';
+                }
+                else{
+                    $html .= '<input type="checkbox" id="'.$single_post_type.'" name="TI_display_post_types[]" value="'.$single_post_type.'" />';
+                }
+               
+                $html .=  '<label for="'.$single_post_type.'"> '.$single_post_type.'</label><br>';
             }
-            ?>
-            
-        <?php }       
+
+            echo $html;
+           
+       }       
 
     function TI_display_location_html() // The HTML for the setting location field
     { ?>
@@ -120,7 +133,7 @@ class ATISettings {
         add_settings_section('first_section',null,null,'text_information_settings');
 
         add_settings_field('TI_display_post_types','Select post_types',[$this, 'TI_display_post_types_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the location field
-        register_setting('text_information_plugin','TI_display_post_types',['sanitize_callback' => [$this, 'sanitizeLocation'], 'default' => '0']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
+        register_setting('text_information_plugin','TI_display_post_types',['type' => 'array', 'description => get all the post types', 'default' => '1']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
 
         add_settings_field('TI_display_location','Choose Location',[$this, 'TI_display_location_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the location field
         register_setting('text_information_plugin','TI_display_location',['sanitize_callback' => [$this, 'sanitizeLocation'], 'default' => '0']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
@@ -157,7 +170,7 @@ class ATIDisplay {
 
     function filterIf($the_content)
     {
-        if((is_main_query() && is_single()) && (get_option('TI_display_wordcount') || get_option('TI_display_charactercount')  || get_option('TI_display_readtime'))) // Run filter if one of filter options is checked and its not on a page
+        if((is_main_query() && is_singular(get_option( 'TI_display_post_types' ))) && (get_option('TI_display_wordcount') || get_option('TI_display_charactercount')  || get_option('TI_display_readtime'))) // Run filter if one of filter options is checked and its not on a page
         {
             return $this->display_html($the_content);
         }
@@ -184,6 +197,7 @@ class ATIDisplay {
     function display_html($the_content)
     {
 
+        
        $extra_content = "<div class='ati_block'>";
       
        if(get_option('TI_display_headline_checkbox') == "1")
@@ -235,7 +249,8 @@ function ati_plugin_activate() // Create the options fields in the database upon
         add_option("TI_display_headline_checkbox", "1");
         add_option("TI_display_wordcount", "1");
         add_option("TI_display_charactercount", "1");
-        add_option("TI_display_readtime", "1");
+        add_option("TI_display_readtime", "1"); 
+        add_option("TI_display_post_types", "1");
    
 }
 
@@ -247,4 +262,5 @@ function ati_plugin_deactivate() // Remove the options fields in the database up
     delete_option( "TI_display_wordcount" );
     delete_option( "TI_display_charactercount" );
     delete_option( "TI_display_readtime" );
+    delete_option( "TI_display_post_types" );
 }
