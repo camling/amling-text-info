@@ -3,7 +3,7 @@
 /*
 Plugin Name: Amling Text Information
 Description: Add information about the text, Word Count, Character Count...
-Version: 1.0.1
+Version: 1.1.0
 Author: Chris Amling
 Author URI: https://christopheramling.com
 */
@@ -45,6 +45,31 @@ class ATISettings {
             </div>
             ';
         }
+
+    function TI_display_post_types_html() // The HTML for the setting location field
+        { 
+            
+            $post_types = get_post_types(['public' => true], 'objects');
+            $posts_types_array = [];
+            foreach ($post_types as $post_type) {
+                if($post_type->name == 'attachment')
+                {
+                    continue;
+                }
+                $posts_types_array[$post_type->name] = $post_type->labels->singular_name;
+            }
+
+            sort($posts_types_array);
+
+             foreach($posts_types_array as $single_post_type)
+             { ?>
+                 <input type="checkbox" id="<?php echo $single_post_type ?>" value="1" name="TI_display_post_types_checkbox" <?php checked(get_option('TI_display_headline_checkbox'), "1");?> >
+                 <label for="<?php echo $single_post_type ?>"> <?php echo $single_post_type ?></label><br>
+            <?php 
+            }
+            ?>
+            
+        <?php }       
 
     function TI_display_location_html() // The HTML for the setting location field
     { ?>
@@ -93,6 +118,9 @@ class ATISettings {
 
     function settings_page(){
         add_settings_section('first_section',null,null,'text_information_settings');
+
+        add_settings_field('TI_display_post_types','Select post_types',[$this, 'TI_display_post_types_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the location field
+        register_setting('text_information_plugin','TI_display_post_types',['sanitize_callback' => [$this, 'sanitizeLocation'], 'default' => '0']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
 
         add_settings_field('TI_display_location','Choose Location',[$this, 'TI_display_location_html'],'text_information_settings', 'first_section'); // Adding the setting field data for the location field
         register_setting('text_information_plugin','TI_display_location',['sanitize_callback' => [$this, 'sanitizeLocation'], 'default' => '0']);  // Adding settings, parameters: group name, name of setting, array of options: sanatize_callback, default. (sanitize_text_field is a wordpress function to sanitize data)
